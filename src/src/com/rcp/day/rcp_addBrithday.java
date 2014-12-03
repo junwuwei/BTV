@@ -17,7 +17,9 @@ import src.com.rcp.photo.Rcp_IndexSearchActivity;
 import src.com.rcp.wheelview.ScreenInfo;
 import src.com.rcp.wheelview.WheelMain;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -43,34 +45,34 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 /***
- * Ìí¼ÓÉúÈÕ½çÃæ
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ½ï¿½ï¿½ï¿½
  * 
  * @author toshiba
  * 
  */
 public class rcp_addBrithday extends Activity {
 
-	/*** ×Ô¶¨ÒåDialog */
+	/*** ï¿½Ô¶ï¿½ï¿½ï¿½Dialog */
 	private AlertDialog dialog;
 
 	private WheelMain wheelMain;
-	/** ĞèÒªÒş²ØµÄ²¼¾Ö */
+	/** ï¿½ï¿½Òªï¿½ï¿½ï¿½ØµÄ²ï¿½ï¿½ï¿½ */
 	private LinearLayout layout;
 
 	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 	private AlertDialog alertDialog;
 
-	/** ÉúÈÕÁªÏµÈËÊôĞÔÈİÆ÷ **/
+	/** ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ **/
 	brith_ListItem data1 = new brith_ListItem();
 
-	private static final int PHOTO_REQUEST_TAKEPHOTO = 1;// ÅÄÕÕ
-	private static final int PHOTO_REQUEST_GALLERY = 2;// ´ÓÏà²áÖĞÑ¡Ôñ
-	private static final int PHOTO_REQUEST_CUT = 3;// ½á¹û
+	private static final int PHOTO_REQUEST_TAKEPHOTO = 1;// ï¿½ï¿½ï¿½ï¿½
+	private static final int PHOTO_REQUEST_GALLERY = 2;// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½
+	private static final int PHOTO_REQUEST_CUT = 3;// ï¿½ï¿½ï¿½
 
-	public static final int SEND_SEARCH_NAME = 4;// ÏòÁªÏµÈË
-	public static final int SEND_SEARCH_PHONE = 5;// ÏòÁªÏµÈË
-	// ´´½¨Ò»¸öÒÔµ±Ç°Ê±¼äÎªÃû³ÆµÄÎÄ¼ş
+	public static final int SEND_SEARCH_NAME = 4;// ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½
+	public static final int SEND_SEARCH_PHONE = 5;// ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½
+	// ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ôµï¿½Ç°Ê±ï¿½ï¿½Îªï¿½ï¿½Æµï¿½ï¿½Ä¼ï¿½
 	File tempFile = new File(Environment.getExternalStorageDirectory()
 			+ "/brithPhoto/", getPhotoFileName());
 
@@ -78,43 +80,43 @@ public class rcp_addBrithday extends Activity {
 
 	private TextView tv_title;
 
-	/** ÉèÖÃÉúÈÕ°´Å¥ */
+	/** ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ°ï¿½Å¥ */
 	private Button btn_setBrith;
-	/** ²éÕÒÁªÏµÈË°´Å¥ **/
+	/** ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½Ë°ï¿½Å¥ **/
 	private Button btn_lianxiren_name;
 
-	/** ²éÕÒÁªÏµÈË°´Å¥ **/
+	/** ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½Ë°ï¿½Å¥ **/
 	private Button btn_lianxiren_phone;
-	/** ±£´æ°´Å¥ **/
+	/** ï¿½ï¿½ï¿½æ°´Å¥ **/
 	private Button btn_save;
-	/** ·¢ËÍ¶ÌĞÅ°´Å¥ */
+	/** ï¿½ï¿½ï¿½Í¶ï¿½ï¿½Å°ï¿½Å¥ */
 	private Button btn_sendSMS;
-	/** Êı¾İ¿â²Ù×÷¶ÔÏó **/
+	/** ï¿½ï¿½İ¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ **/
 	private sql_brith db_brith;
-	/** add½çÃæÈı¸öEditText */
+	/** addï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½EditText */
 	private EditText add_edit[] = new EditText[3];
-	/** ÊÇ·ñ³É¹¦±£´æ **/
+	/** ï¿½Ç·ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½ **/
 	private boolean isOK;
 
-	/** add½çÃæÈı¸öEditTextID */
+	/** addï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½EditTextID */
 	private int EditTextID[] = { R.id.add_brith_name,
 			R.id.add_brith_zhufuduanxin, R.id.add_brith_beizhu };
 	private RadioButton nan, nv;
 
 	private RadioGroup group;
-	/** ĞŞ¸ÄÍ·Ïñ */
+	/** ï¿½Ş¸ï¿½Í·ï¿½ï¿½ */
 	private ImageView ib_upphoto;
 
-	/** ĞŞ¸ÄÍ·Ïñ×Ô¶¨ÒåDialogÖĞµÄ°´Å¥ **/
+	/** ï¿½Ş¸ï¿½Í·ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Dialogï¿½ĞµÄ°ï¿½Å¥ **/
 	private RadioButton rb_dialog[] = new RadioButton[3];
 
 	private int RadioButtonID[] = { R.id.rb_setPhoto1, R.id.rb_setPhoto2,
 			R.id.rb_setPhoto3 };
 
-	/** Í¨¹ıcenterIndexÀ´¾ö¶¨²ÉÓÃÄÇÖÖ´æ´¢·½Ê½ **/
+	/** Í¨ï¿½ï¿½centerIndexï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´æ´¢ï¿½ï¿½Ê½ **/
 	private int centerIndex;
 
-	// »ñµÃ±à¼­È¨ÏŞ
+	// ï¿½ï¿½Ã±à¼­È¨ï¿½ï¿½
 	SharedPreferences.Editor editor;
 
 	private int brithID;
@@ -144,7 +146,7 @@ public class rcp_addBrithday extends Activity {
 
 	public void newCreateFile() {
 		File file1 = new File(path);
-		// Ã»ÓĞÄ¿Â¼ÏÈ½¨Á¢Ä¿Â¼
+		// Ã»ï¿½ï¿½Ä¿Â¼ï¿½È½ï¿½ï¿½ï¿½Ä¿Â¼
 		if (!file1.exists()) {
 
 			System.out.println("============" + file1.mkdirs());
@@ -157,7 +159,7 @@ public class rcp_addBrithday extends Activity {
 	}
 
 	/**
-	 * ViewµÄ³õÊ¼»¯
+	 * Viewï¿½Ä³ï¿½Ê¼ï¿½ï¿½
 	 * 
 	 */
 	public void viewInit() {
@@ -188,7 +190,7 @@ public class rcp_addBrithday extends Activity {
 		ib_upphoto.setOnClickListener(onClickListener);
 		tv_title = (TextView) this.findViewById(R.id.add_title);
 		if (centerIndex == 100) {
-			tv_title.setText("ÇëÉèÖÃÄúµÄ»ù±¾ĞÅÏ¢");
+			tv_title.setText("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Ï¢");
 			layout.setVisibility(View.GONE);
 			btn_sendSMS.setVisibility(View.GONE);
 		} else {
@@ -203,7 +205,7 @@ public class rcp_addBrithday extends Activity {
 			if (id == R.id.add_brith_brith) {
 				showDateTimePicker();
 			} else if (id == R.id.add_brith_name_tolianxiren) {
-				// Àë¿ªµ±Ç°ActivityÒª¹Ø±ÕÊı¾İ¿â
+				// ï¿½ë¿ªï¿½ï¿½Ç°ActivityÒªï¿½Ø±ï¿½ï¿½ï¿½İ¿ï¿½
 				// sqlDatebase.closeSQl();
 				Intent intent = new Intent();
 				intent.putExtra("add_index_name", 1);
@@ -234,7 +236,7 @@ public class rcp_addBrithday extends Activity {
 						}
 					}
 				} else {
-					Toast.makeText(rcp_addBrithday.this, "Ç×,ÇëÍêÉÆĞÅÏ¢ÔÙ±£´æ", 0)
+					Toast.makeText(rcp_addBrithday.this, "ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½Ù±ï¿½ï¿½ï¿½", 0)
 							.show();
 				}
 				Intent intent4 = new Intent(rcp_addBrithday.this,
@@ -245,9 +247,9 @@ public class rcp_addBrithday extends Activity {
 				showSetPhotoDialog();
 			} else if (id == R.id.rb_setPhoto1) {
 				alertDialog.dismiss();
-				// µ÷ÓÃÏµÍ³µÄÅÄÕÕ¹¦ÄÜ
+				// ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½ï¿½
 				Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-				// Ö¸¶¨µ÷ÓÃÏà»úÅÄÕÕºóÕÕÆ¬µÄ´¢´æÂ·¾¶
+				// Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õºï¿½ï¿½ï¿½Æ¬ï¿½Ä´ï¿½ï¿½ï¿½Â·ï¿½ï¿½
 				intent1.putExtra(MediaStore.EXTRA_OUTPUT,
 						Uri.fromFile(tempFile));
 				startActivityForResult(intent1, PHOTO_REQUEST_TAKEPHOTO);
@@ -266,7 +268,7 @@ public class rcp_addBrithday extends Activity {
 
 	/***
 	 * 
-	 * ¶ÁÈ¡ÉúÈÕÄÚÈİ
+	 * ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 * 
 	 */
 	public Cursor readInfo(String ID) {
@@ -282,11 +284,11 @@ public class rcp_addBrithday extends Activity {
 		try {
 			cursor = readInfo(brithID + "");
 			if (cursor != null) {
-				// ÓÎ±êÏÂ±ê¹éÁã
+				// ï¿½Î±ï¿½ï¿½Â±ï¿½ï¿½ï¿½ï¿½
 				cursor.moveToPosition(0);
-				// È¡ÓÎ±êÖĞµÄÖµ
+				// È¡ï¿½Î±ï¿½ï¿½Ğµï¿½Öµ
 				while (true) {
-					// ÅĞ¶ÏÊÇ·ñÔÚ×îºó
+					// ï¿½Ğ¶ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 					if (cursor.isAfterLast()) {
 						break;
 					}
@@ -301,7 +303,7 @@ public class rcp_addBrithday extends Activity {
 						ib_upphoto.setImageBitmap(map);
 					} else {
 						ib_upphoto
-								.setBackgroundResource(sex.equals("ÄĞ") ? R.drawable.defaultboy
+								.setBackgroundResource(sex.equals("ï¿½ï¿½") ? R.drawable.defaultboy
 										: R.drawable.defaultgirl);
 					}
 					int year = cursor.getInt(5);
@@ -319,10 +321,10 @@ public class rcp_addBrithday extends Activity {
 					// date);
 					// String month_ = calendarUtil.getChineseMonth(year, month,
 					// date);
-					// tv_birth_2ndline.setText(year_ + "Äê(" + year + ")" +
+					// tv_birth_2ndline.setText(year_ + "ï¿½ï¿½(" + year + ")" +
 					// month_ +
 					// day_);
-					int ind = sex.equals("ÄĞ") ? 0 : 1;
+					int ind = sex.equals("ï¿½ï¿½") ? 0 : 1;
 					if (ind == 1) {
 						nv.setChecked(true);
 					} else {
@@ -335,7 +337,7 @@ public class rcp_addBrithday extends Activity {
 					// data1.setBrithPer_age(otherUtil.getCurYear() -
 					// data1.gregorianYear);
 					// data1.setBrithPer_sex((group.getCheckedRadioButtonId() ==
-					// R.id.add_brith_nan) ? "ÄĞ"
+					// R.id.add_brith_nan) ? "ï¿½ï¿½"
 					// : "Å®");
 
 					// data1.setBrithPer_phone(add_edit[1].getText().toString());
@@ -372,14 +374,14 @@ public class rcp_addBrithday extends Activity {
 
 	/***
 	 * 
-	 * ±£´æÓÃ»§Êı¾İ
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½
 	 * 
 	 */
 	public void saveToShape() {
 		isOK = false;
 		editor.putString("name", add_edit[0].getText().toString());
 		editor.putString("sex",
-				(group.getCheckedRadioButtonId() == R.id.add_brith_nan) ? "ÄĞ"
+				(group.getCheckedRadioButtonId() == R.id.add_brith_nan) ? "ï¿½ï¿½"
 						: "Å®");
 		editor.putString("email", activityVolues.loadName);
 		boolean id = editor.commit();
@@ -388,14 +390,14 @@ public class rcp_addBrithday extends Activity {
 
 	/**
 	 * 
-	 * ±£´æÊı¾İµ½DB
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İµï¿½DB
 	 * 
 	 */
 	public void savetTodb() {
-		// Ã¿´ÎÖ»ÄÜ±£´æÒ»´Î
+		// Ã¿ï¿½ï¿½Ö»ï¿½Ü±ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
 		isOK = false;
 		db_brith.insert(set());
-		// Î´±¸·İµÄÊıÁ¿++
+		// Î´ï¿½ï¿½ï¿½İµï¿½ï¿½ï¿½ï¿½ï¿½++
 		activityVolues.backupCount++;
 		Log.e(".............>>>", activityVolues.backupCount + "");
 	}
@@ -411,7 +413,7 @@ public class rcp_addBrithday extends Activity {
 				System.out.println("oooooooooooooooooooooooooooo");
 				break;
 			}
-			Bundle b = data.getExtras(); // dataÎªBÖĞ»Ø´«µÄIntent
+			Bundle b = data.getExtras(); // dataÎªBï¿½Ğ»Ø´ï¿½ï¿½ï¿½Intent
 			String str = b.getString("add_name");
 			add_edit[0].setText(str);
 		}
@@ -421,7 +423,7 @@ public class rcp_addBrithday extends Activity {
 				System.out.println("oooooooooooooooooooooooooooo");
 				break;
 			}
-			Bundle b = data.getExtras(); // dataÎªBÖĞ»Ø´«µÄIntent
+			Bundle b = data.getExtras(); // dataÎªBï¿½Ğ»Ø´ï¿½ï¿½ï¿½Intent
 			String str = b.getString("add_phone");
 			add_edit[1].setText(str);
 		}
@@ -438,7 +440,7 @@ public class rcp_addBrithday extends Activity {
 			if (data != null) {
 
 				startPhotoZoom(data.getData(), 150);
-				// ´«Ò»¸öÄÚ²¿µØÖ·
+				// ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½Ö·
 
 				if (centerIndex == 100) {
 					editor.putString("photo", data.getDataString());
@@ -468,7 +470,7 @@ public class rcp_addBrithday extends Activity {
 	public brith_ListItem set() {
 		data1.setBrithPer_name(add_edit[0].getText().toString());
 		data1.setBrithPer_age(otherUtil.getCurYear() - data1.gregorianYear);
-		data1.setBrithPer_sex((group.getCheckedRadioButtonId() == R.id.add_brith_nan) ? "ÄĞ"
+		data1.setBrithPer_sex((group.getCheckedRadioButtonId() == R.id.add_brith_nan) ? "ï¿½ï¿½"
 				: "Å®");
 
 		data1.setBrithPer_phone(add_edit[1].getText().toString());
@@ -483,7 +485,7 @@ public class rcp_addBrithday extends Activity {
 
 	/***
 	 * 
-	 * Ê±¼ä¹ö¶¯Æ÷
+	 * Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 * 
 	 */
 	public void showDateTimePicker() {
@@ -495,7 +497,7 @@ public class rcp_addBrithday extends Activity {
 		wheelMain = new WheelMain(timepickerview);
 		wheelMain.screenheight = screenInfo.getHeight();
 		Calendar calendar = Calendar.getInstance();
-		// calendar.setTime(dateFormat.parse(time));ÉèÖÃÖ¸¶¨Ê±¼ä
+		// calendar.setTime(dateFormat.parse(time));ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Ê±ï¿½ï¿½
 		int year = calendar.get(Calendar.YEAR);
 		int month = calendar.get(Calendar.MONTH);
 		int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -503,8 +505,8 @@ public class rcp_addBrithday extends Activity {
 		dialog = new AlertDialog.Builder(this).setView(timepickerview).show();
 
 		Window window = dialog.getWindow();
-		window.setGravity(Gravity.BOTTOM); // ´Ë´¦¿ÉÒÔÉèÖÃdialogÏÔÊ¾µÄÎ»ÖÃ
-		window.setWindowAnimations(R.style.mystyle); // Ìí¼Ó¶¯»­
+		window.setGravity(Gravity.BOTTOM); // ï¿½Ë´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½dialogï¿½ï¿½Ê¾ï¿½ï¿½Î»ï¿½ï¿½
+		window.setWindowAnimations(R.style.mystyle); // ï¿½ï¿½Ó¶ï¿½ï¿½ï¿½
 
 		Button btn = (Button) timepickerview
 				.findViewById(R.id.btn_datetime_sure);
@@ -521,6 +523,25 @@ public class rcp_addBrithday extends Activity {
 				editor.putString("month", wheelMain.getMonth() + "");
 				editor.putString("date", wheelMain.getDay() + "");
 				btn_setBrith.setHint(wheelMain.getTime());
+				
+				
+				 Intent intent1 = new Intent("android.alarm.demo.action");
+		            PendingIntent sender = PendingIntent.getBroadcast(rcp_addBrithday.this,
+		                    0, intent1, 0);
+
+		            // We want the alarm to go off 30 seconds from now.
+		            Calendar calendar = Calendar.getInstance();
+		            calendar.setTimeInMillis(System.currentTimeMillis());
+//		            calendar.add(Calendar.SECOND, 15);
+		            calendar.add( data1.getGregorianMouth(), data1.getGregorianDate());
+		            // Schedule the alarm!
+		            AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
+//		            am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
+		            am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
+				Toast.makeText(rcp_addBrithday.this, "15ç§’åæé†’", Toast.LENGTH_LONG).show();
+				
+				
+				
 				dialog.dismiss();
 			}
 		});
@@ -528,13 +549,13 @@ public class rcp_addBrithday extends Activity {
 	}
 
 	/**
-	 * ÏÔÊ¾ÉèÖÃÍ·ÏñµÄDialog
+	 * ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½ï¿½Dialog
 	 * 
 	 */
 	private void showSetPhotoDialog() {
-		// ³õÊ¼»¯×Ô¶¨Òå²¼¾Ö²ÎÊı
+		// ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½å²¼ï¿½Ö²ï¿½ï¿½ï¿½
 		LayoutInflater layoutInflater = getLayoutInflater();
-		// ÎªÁËÄÜÔÚÏÂÃæµÄOnClickListenerÖĞ»ñÈ¡²¼¾ÖÉÏ×é¼şµÄÊı¾İ£¬±ØĞë¶¨ÒåÎªfinalÀàĞÍ.
+		// Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OnClickListenerï¿½Ğ»ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ£ï¿½ï¿½ï¿½ï¿½ë¶¨ï¿½ï¿½Îªfinalï¿½ï¿½ï¿½ï¿½.
 		View customLayout = layoutInflater.inflate(
 				R.layout.showsetphototdialog,
 				(ViewGroup) findViewById(R.id.customDialog));
@@ -549,21 +570,21 @@ public class rcp_addBrithday extends Activity {
 				.show();
 
 		Window window = alertDialog.getWindow();
-		window.setGravity(Gravity.BOTTOM); // ´Ë´¦¿ÉÒÔÉèÖÃdialogÏÔÊ¾µÄÎ»ÖÃ
-		window.setWindowAnimations(R.style.mystyle); // Ìí¼Ó¶¯»­
+		window.setGravity(Gravity.BOTTOM); // ï¿½Ë´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½dialogï¿½ï¿½Ê¾ï¿½ï¿½Î»ï¿½ï¿½
+		window.setWindowAnimations(R.style.mystyle); // ï¿½ï¿½Ó¶ï¿½ï¿½ï¿½
 	}
 
 	private void startPhotoZoom(Uri uri, int size) {
 		Intent intent = new Intent("com.android.camera.action.CROP");
 		intent.setDataAndType(uri, "image/*");
-		// cropÎªtrueÊÇÉèÖÃÔÚ¿ªÆôµÄintentÖĞÉèÖÃÏÔÊ¾µÄview¿ÉÒÔ¼ô²Ã
+		// cropÎªtrueï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½intentï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½viewï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½
 		intent.putExtra("crop", "true");
 
-		// aspectX aspectY ÊÇ¿í¸ßµÄ±ÈÀı
+		// aspectX aspectY ï¿½Ç¿ï¿½ßµÄ±ï¿½ï¿½ï¿½
 		intent.putExtra("aspectX", 1);
 		intent.putExtra("aspectY", 1);
 
-		// outputX,outputY ÊÇ¼ô²ÃÍ¼Æ¬µÄ¿í¸ß
+		// outputX,outputY ï¿½Ç¼ï¿½ï¿½ï¿½Í¼Æ¬ï¿½Ä¿ï¿½ï¿½
 		intent.putExtra("outputX", size);
 		intent.putExtra("outputY", size);
 		intent.putExtra("return-data", true);
@@ -571,7 +592,7 @@ public class rcp_addBrithday extends Activity {
 		startActivityForResult(intent, PHOTO_REQUEST_CUT);
 	}
 
-	// ½«½øĞĞ¼ô²ÃºóµÄÍ¼Æ¬ÏÔÊ¾µ½UI½çÃæÉÏ
+	// ï¿½ï¿½ï¿½ï¿½ï¿½Ğ¼ï¿½ï¿½Ãºï¿½ï¿½Í¼Æ¬ï¿½ï¿½Ê¾ï¿½ï¿½UIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	private void setPicToView(Intent picdata) {
 		Bundle bundle = picdata.getExtras();
 
@@ -584,7 +605,7 @@ public class rcp_addBrithday extends Activity {
 		}
 	}
 
-	// Ê¹ÓÃÏµÍ³µ±Ç°ÈÕÆÚ¼ÓÒÔµ÷Õû×÷ÎªÕÕÆ¬µÄÃû³Æ
+	// Ê¹ï¿½ï¿½ÏµÍ³ï¿½ï¿½Ç°ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½Ôµï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Æ¬ï¿½ï¿½ï¿½ï¿½ï¿½
 	private String getPhotoFileName() {
 		Date date = new Date(System.currentTimeMillis());
 		SimpleDateFormat dateFormat = new SimpleDateFormat(
